@@ -17,7 +17,7 @@
     "url": "git@github.com:eea/volto-description-block.git"
   },
   "addons": [
-    "volto-slates"
+    "volto-slate"
   ],
   "dependencies": {
     "@plone/scripts": "*",
