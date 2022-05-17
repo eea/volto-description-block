@@ -3,24 +3,17 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { defineMessages, useIntl } from 'react-intl';
 import config from '@plone/volto/registry';
 import { SidebarPortal } from '@plone/volto/components';
-import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
+import { BlockDataForm } from '@plone/volto/components';
 import { handleKey } from 'volto-slate/blocks/Text/keyboard';
 import { saveSlateBlockSelection } from 'volto-slate/actions';
 import SlateEditor from 'volto-slate/editor/SlateEditor';
 import { serializeNodesToText } from 'volto-slate/editor/render';
 import schema from './schema';
-
-// let timer = [];
-
-// const debounce = (func, index, timeout = 200, ...args) => {
-//   if (timer[index]) clearTimeout(timer[index]);
-//   timer[index] = setTimeout(func, timeout, ...args);
-// };
 
 const messages = defineMessages({
   description: {
@@ -45,7 +38,7 @@ export const DescriptionBlockEdit = (props) => {
   const intl = useIntl();
 
   const text = metadata?.['description'] || properties?.['description'] || '';
-  const blockText = data?.text || config.settings.slate.defaultValue();
+  const blockText = data?.value || config.settings.slate.defaultValue();
   const plainBlockText = useMemo(() => serializeNodesToText(blockText), [
     blockText,
   ]);
@@ -63,7 +56,7 @@ export const DescriptionBlockEdit = (props) => {
       const plainValue = serializeNodesToText(value);
       onChangeBlock(block, {
         ...data,
-        text: value,
+        value: value,
       });
       if (plainValue !== text) {
         onChangeField('description', plainValue);
@@ -84,27 +77,6 @@ export const DescriptionBlockEdit = (props) => {
     return blockText;
   }, [text, blockText, plainBlockText]);
 
-  useEffect(() => {
-    // if (plainBlockText !== text) {
-    //   debounce(
-    //     () => {
-    //       onChangeBlock(block, {
-    //         ...data,
-    //         text: [
-    //           {
-    //             type: 'p',
-    //             children: [{ text }],
-    //           },
-    //         ],
-    //       });
-    //     },
-    //     0,
-    //     500,
-    //   );
-    // }
-    /* eslint-disable-next-line */
-  }, [text, plainBlockText]);
-
   const handleFocus = useCallback(() => {
     if (!selected) {
       onSelectBlock(block);
@@ -119,7 +91,7 @@ export const DescriptionBlockEdit = (props) => {
     data.placeholder || intl.formatMessage(messages['description']);
 
   return (
-    <React.Fragment>
+    <div className="eea callout">
       <SlateEditor
         index={index}
         properties={properties}
@@ -135,7 +107,7 @@ export const DescriptionBlockEdit = (props) => {
         slateSettings={slate}
       />
       <SidebarPortal selected={props.selected}>
-        <InlineForm
+        <BlockDataForm
           schema={schema}
           title={schema.title}
           onChangeField={(id, value) => {
@@ -145,9 +117,10 @@ export const DescriptionBlockEdit = (props) => {
             });
           }}
           formData={props.data}
+          block={block}
         />
       </SidebarPortal>
-    </React.Fragment>
+    </div>
   );
 };
 

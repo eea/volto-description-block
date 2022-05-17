@@ -9,5 +9,11 @@ export default (config) => {
     sidebarTab: 0,
   };
 
+  // Footnotes
+  config.settings.blocksWithFootnotes = [
+    ...(config.settings.blocksWithFootnotes || []),
+    'description',
+  ];
+
   return config;
 };
