@@ -20,7 +20,7 @@ const View = (props) => {
   const metadata = props.metadata || props.properties;
 
   const text = metadata?.['description'] || '';
-  const blockText = data?.text || config.settings.slate.defaultValue();
+  const blockText = data?.value || config.settings.slate.defaultValue();
   const plainBlockText = useMemo(() => serializeNodesToText(blockText), [
     blockText,
   ]);
@@ -37,8 +37,7 @@ const View = (props) => {
     return blockText;
   }, [text, blockText, plainBlockText]);
 
-  if (__SERVER__) return '';
-  return serializeText(value);
+  return <div className="eea callout">{serializeText(value)}</div>;
 };
 
 export default View;
