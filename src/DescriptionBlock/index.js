@@ -10,10 +10,10 @@ export default (config) => {
   };
 
   // Footnotes
-  config.settings.blocksWithFootnotes = [
-    ...(config.settings.blocksWithFootnotes || []),
-    'description',
-  ];
+  config.settings.blocksWithFootnotesSupport = {
+    ...(config.settings.blocksWithFootnotesSupport || {}),
+    description: ['value'],
+  };
 
   return config;
 };
