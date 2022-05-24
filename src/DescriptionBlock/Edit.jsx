@@ -91,7 +91,7 @@ export const DescriptionBlockEdit = (props) => {
     data.placeholder || intl.formatMessage(messages['description']);
 
   return (
-    <div className="eea callout">
+    <div className={config.blocks.blocksConfig.description.className}>
       <SlateEditor
         index={index}
         properties={properties}
