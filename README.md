@@ -15,11 +15,11 @@
 [![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-develop&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-develop)
 
 
-[Volto](https://github.com/plone/volto) Description block
+[Volto](https://github.com/plone/volto) Description block based on [volto-slate](https://github.com/eea/volto-slate) that automatically strips HTML and updates Document description metadata field.
 
 ## Features
 
-Description block based on [volto-slate](https://github.com/eea/volto-slate) that automatically strips HTML and updates Document description metadata field.
+![Description Block](https://github.com/eea/volto-description-block/raw/develop/docs/description.gif)
 
 ## Getting started
 
@@ -34,7 +34,7 @@ Description block based on [volto-slate](https://github.com/eea/volto-slate) tha
 
 1. Start Plone backend
    ```
-   docker run -d --name plone -p 8080:8080 -e SITE=Plone -e PROFILES="profile-plone.restapi:blocks" plone
+   docker run -d --name plone -p 8080:8080 -e SITE=Plone plone/plone-backend
    ```
 
 1. Start Volto frontend
@@ -59,7 +59,7 @@ Description block based on [volto-slate](https://github.com/eea/volto-slate) tha
    ],
 
    "dependencies": {
-       "@eeacms/volto-description-block": "^1.0.0"
+       "@eeacms/volto-description-block": "*"
    }
    ```
 

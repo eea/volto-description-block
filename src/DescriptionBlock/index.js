@@ -6,7 +6,8 @@ export default (config) => {
     ...config.blocks.blocksConfig.description,
     edit: Edit,
     view: View,
-    sidebarTab: 0,
+    restricted: false,
+    className: 'documentDescription',
   };
 
   // Footnotes

@@ -37,7 +37,11 @@ const View = (props) => {
     return blockText;
   }, [text, blockText, plainBlockText]);
 
-  return <div className="eea callout">{serializeText(value)}</div>;
+  return (
+    <div className={config.blocks.blocksConfig.description.className}>
+      {serializeText(value)}
+    </div>
+  );
 };
 
 export default View;
