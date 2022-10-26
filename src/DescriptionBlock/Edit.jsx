@@ -9,10 +9,10 @@ import { defineMessages, useIntl } from 'react-intl';
 import config from '@plone/volto/registry';
 import { SidebarPortal } from '@plone/volto/components';
 import { BlockDataForm } from '@plone/volto/components';
-import { handleKey } from 'volto-slate/blocks/Text/keyboard';
-import { saveSlateBlockSelection } from 'volto-slate/actions';
-import SlateEditor from 'volto-slate/editor/SlateEditor';
-import { serializeNodesToText } from 'volto-slate/editor/render';
+import { handleKey } from '@plone/volto-slate/blocks/Text/keyboard';
+import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
+import SlateEditor from '@plone/volto-slate/editor/SlateEditor';
+import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
 
 const messages = defineMessages({
