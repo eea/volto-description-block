@@ -54,27 +54,23 @@ describe('Blocks Tests', () => {
       .type('lorem ipsum dolor sit amet');
 
     // Select a part of the text and make it bold
-    cy.get('.ui.drag.block.inner.description span span span').setSelection(
-      'lorem',
-    );
+    cy.get('.documentDescription [contenteditable=true]').setSelection('lorem');
     cy.get('.ui.buttons .button-wrapper a[title="Bold"]').click({
       force: true,
     });
 
     // Select another part of the text and make it italic
     cy.get('.documentDescription div[role="textbox"]').click();
-    cy.get('.ui.drag.block.inner.description span span span')
-      .eq(2)
-      .setSelection('ipsum');
+    cy.get('.documentDescription [contenteditable=true]').setSelection('ipsum');
     cy.get('.ui.buttons .button-wrapper a[title="Italic"]').click({
       force: true,
     });
 
     // Select another part of the text and make it a subscript
     cy.get('.documentDescription div[role="textbox"]').click();
-    cy.get('.ui.drag.block.inner.description span span span')
-      .eq(4)
-      .setSelection('dolor sit amet');
+    cy.get('.documentDescription [contenteditable=true]').setSelection(
+      'dolor sit amet',
+    );
     cy.get('.ui.buttons .button-wrapper a[title="Subscript"]').click({
       force: true,
     });
