@@ -76,9 +76,7 @@ describe('Blocks Tests', () => {
     });
 
     cy.contains('lorem ipsum dolor sit amet');
-    cy.document()
-      .get('head meta[name="description"]')
-      .should('have.attr', 'content', 'lorem ipsum dolor sit amet');
+    cy.get('#field-description').contains('lorem ipsum dolor sit amet');
 
     cy.get('#toolbar-save').click();
 
