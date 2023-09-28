@@ -19,35 +19,28 @@
 
 ## Features
 
-![Description Block](https://github.com/eea/volto-description-block/raw/develop/docs/description.gif)
+[![Description Block](https://github.com/eea/volto-description-block/raw/develop/docs/description.gif)](https://youtu.be/JG_p85tOZi0)
 
 ## Getting started
 
 ### Try volto-description-block with Docker
 
-1. Get the latest Docker images
-
-   ```
-   docker pull plone
-   docker pull plone/volto
-   ```
-
-1. Start Plone backend
-   ```
-   docker run -d --name plone -p 8080:8080 -e SITE=Plone plone/plone-backend
+   ```Bash
+   git clone https://github.com/eea/volto-toolbar-actions.git
+   cd volto-toolbar-actions
+   make
+   make start
    ```
 
-1. Start Volto frontend
-
-   ```
-   docker run -it --rm -p 3000:3000 --link plone -e ADDONS="@eeacms/volto-description-block" plone/volto
-   ```
-
-1. Go to http://localhost:3000
+Go to http://localhost:3000
 
 ### Add volto-description-block to your Volto project
 
 1. Make sure you have a [Plone backend](https://plone.org/download) up-and-running at http://localhost:8080/Plone
+
+   ```Bash
+   docker compose up backend
+   ```
 
 1. Start Volto frontend
 
