@@ -25,12 +25,10 @@
 
 ### Try volto-description-block with Docker
 
-   ```Bash
-   git clone https://github.com/eea/volto-toolbar-actions.git
-   cd volto-toolbar-actions
-   make
-   make start
-   ```
+      git clone https://github.com/eea/volto-description-block.git
+      cd volto-description-block
+      make
+      make start
 
 Go to http://localhost:3000
 
@@ -60,7 +58,7 @@ Go to http://localhost:3000
 
    ```
    npm install -g yo @plone/generator-volto
-   yo @plone/volto my-volto-project --addon @eeacms/volto-description-block
+   yo @plone/volto my-volto-project --canary --addon @eeacms/volto-description-block
    cd my-volto-project
    ```
 
