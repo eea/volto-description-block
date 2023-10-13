@@ -19,7 +19,7 @@
 
 ## Features
 
-[![Description Block](https://github.com/eea/volto-description-block/raw/develop/docs/description.gif)](https://youtu.be/JG_p85tOZi0)
+[![Description Block](https://github.com/eea/volto-description-block/raw/master/docs/description.gif)](https://youtu.be/JG_p85tOZi0)
 
 ## Getting started
 
