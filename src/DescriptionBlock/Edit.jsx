@@ -38,9 +38,10 @@ export const DescriptionBlockEdit = (props) => {
 
   const text = metadata?.['description'] || properties?.['description'] || '';
   const blockText = data?.value || config.settings.slate.defaultValue();
-  const plainBlockText = useMemo(() => serializeNodesToText(blockText), [
-    blockText,
-  ]);
+  const plainBlockText = useMemo(
+    () => serializeNodesToText(blockText),
+    [blockText],
+  );
 
   const withBlockProperties = useCallback(
     (editor) => {
