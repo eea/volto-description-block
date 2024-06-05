@@ -35,7 +35,7 @@ export const DescriptionBlockEdit = (props) => {
     data,
   } = props;
   const intl = useIntl();
-  const value = data.value || config.settings.slate.defaultValue();
+  const value = data?.value || config.settings.slate.defaultValue();
   const text = metadata?.['description'] || properties?.['description'] || '';
 
   const withBlockProperties = useCallback(
