@@ -3,7 +3,7 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { defineMessages, useIntl } from 'react-intl';
 import config from '@plone/volto/registry';
@@ -35,13 +35,8 @@ export const DescriptionBlockEdit = (props) => {
     data,
   } = props;
   const intl = useIntl();
-
+  const value = data?.value || config.settings.slate.defaultValue();
   const text = metadata?.['description'] || properties?.['description'] || '';
-  const blockText = data?.value || config.settings.slate.defaultValue();
-  const plainBlockText = useMemo(
-    () => serializeNodesToText(blockText),
-    [blockText],
-  );
 
   const withBlockProperties = useCallback(
     (editor) => {
@@ -65,18 +60,6 @@ export const DescriptionBlockEdit = (props) => {
     [block, data, text, onChangeField, onChangeBlock],
   );
 
-  const value = useMemo(() => {
-    if (plainBlockText !== text) {
-      return [
-        {
-          type: 'p',
-          children: [{ text }],
-        },
-      ];
-    }
-    return blockText;
-  }, [text, blockText, plainBlockText]);
-
   const handleFocus = useCallback(() => {
     if (!selected) {
       onSelectBlock(block);
@@ -97,9 +80,9 @@ export const DescriptionBlockEdit = (props) => {
         properties={properties}
         extensions={slate.textblockExtensions}
         renderExtensions={[withBlockProperties]}
-        value={value}
         onChange={handleChange}
         block={block}
+        value={value}
         onFocus={handleFocus}
         onKeyDown={handleKey}
         selected={selected}
