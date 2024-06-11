@@ -1,5 +1,4 @@
-/**
- * Edit description block.
+/* Edit description block.
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
@@ -20,9 +19,7 @@ const messages = defineMessages({
     defaultMessage: 'Add a description…',
   },
 });
-
 export const DescriptionBlockEdit = (props) => {
-  const { slate } = config.settings;
   const {
     selected,
     index,
@@ -34,12 +31,11 @@ export const DescriptionBlockEdit = (props) => {
     onChangeBlock,
     data,
   } = props;
+  const { slate } = config.settings;
   const intl = useIntl();
-  const [value, setValue] = useState(
-    data?.value || config.settings.slate.defaultValue(),
-  );
+  const initialValue = data?.value || config.settings.slate.defaultValue();
+  const [value, setValue] = useState(initialValue);
   const text = metadata?.['description'] || properties?.['description'] || '';
-
   const withBlockProperties = useCallback(
     (editor) => {
       editor.getBlockProps = () => props;
@@ -47,20 +43,29 @@ export const DescriptionBlockEdit = (props) => {
     },
     [props],
   );
+  useEffect(() => {
+    // Sync the external text into the slate editor state
+    if (serializeNodesToText(value) !== text) {
+      setValue([
+        {
+          type: 'p',
+          children: [{ text }],
+        },
+      ]);
+    }
+  }, [text]);
 
   const handleChange = useCallback(
     (newValue) => {
       const plainValue = serializeNodesToText(newValue);
 
-      if (JSON.stringify(newValue) !== JSON.stringify(value)) {
-        const newData = { ...data, value: newValue };
+      if (plainValue !== text) {
+        onChangeField('description', plainValue);
+      }
 
-        if (JSON.stringify(newData) !== JSON.stringify(data)) {
-          onChangeBlock(block, newData);
-        }
-        if (plainValue !== text) {
-          onChangeField('description', plainValue);
-        }
+      if (JSON.stringify(newValue) !== JSON.stringify(value)) {
+        setValue(newValue);
+        onChangeBlock(block, { ...data, value: newValue });
       }
     },
     [value, text, block, data, onChangeField, onChangeBlock],
@@ -72,24 +77,8 @@ export const DescriptionBlockEdit = (props) => {
     }
   }, [onSelectBlock, selected, block]);
 
-  if (typeof window.__SERVER__ !== 'undefined' || __SERVER__) {
-    return <div />;
-  }
-
   const placeholder =
     data.placeholder || intl.formatMessage(messages['description']);
-
-  useEffect(() => {
-    let plainText = serializeNodesToText(value);
-    if (plainText !== text) {
-      setValue([
-        {
-          type: 'p',
-          children: [{ text }],
-        },
-      ]);
-    }
-  }, [data, text, value]);
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
@@ -100,21 +89,21 @@ export const DescriptionBlockEdit = (props) => {
         renderExtensions={[withBlockProperties]}
         onChange={handleChange}
         block={block}
-        value={data.value}
+        value={value}
         onFocus={handleFocus}
         onKeyDown={handleKey}
         selected={selected}
         placeholder={placeholder}
         slateSettings={slate}
       />
-      <SidebarPortal selected={props.selected}>
+      <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
           title={schema.title}
-          onChangeField={(id, value) => {
+          onChangeField={(id, newValue) => {
             props.onChangeBlock(props.block, {
               ...props.data,
-              [id]: value,
+              [id]: newValue,
             });
           }}
           formData={props.data}
@@ -125,11 +114,6 @@ export const DescriptionBlockEdit = (props) => {
   );
 };
 
-export default connect(
-  () => {
-    return {};
-  },
-  {
-    saveSlateBlockSelection,
-  },
-)(DescriptionBlockEdit);
+export default connect(() => ({}), { saveSlateBlockSelection })(
+  DescriptionBlockEdit,
+);
