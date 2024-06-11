@@ -53,6 +53,8 @@ export const DescriptionBlockEdit = (props) => {
         },
       ]);
     }
+    //we want to make a rerender only when description metadata is changing
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
   const handleChange = useCallback(
