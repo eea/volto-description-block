@@ -1,9 +1,8 @@
-/**
- * Edit description block.
+/* Edit description block.
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { defineMessages, useIntl } from 'react-intl';
 import config from '@plone/volto/registry';
@@ -20,24 +19,23 @@ const messages = defineMessages({
     defaultMessage: 'Add a description…',
   },
 });
-
 export const DescriptionBlockEdit = (props) => {
-  const { slate } = config.settings;
   const {
     selected,
     index,
     onChangeField,
-    onChangeBlock,
     onSelectBlock,
     block,
     properties,
     metadata,
+    onChangeBlock,
     data,
   } = props;
+  const { slate } = config.settings;
   const intl = useIntl();
-  const value = data?.value || config.settings.slate.defaultValue();
+  const initialValue = data?.value || config.settings.slate.defaultValue();
+  const [value, setValue] = useState(initialValue);
   const text = metadata?.['description'] || properties?.['description'] || '';
-
   const withBlockProperties = useCallback(
     (editor) => {
       editor.getBlockProps = () => props;
@@ -45,19 +43,34 @@ export const DescriptionBlockEdit = (props) => {
     },
     [props],
   );
+  useEffect(() => {
+    // Sync the external text into the slate editor state
+    if (serializeNodesToText(value) !== text) {
+      setValue([
+        {
+          type: 'p',
+          children: [{ text }],
+        },
+      ]);
+    }
+    //we want to make a rerender only when description metadata is changing
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text]);
 
   const handleChange = useCallback(
-    (value) => {
-      const plainValue = serializeNodesToText(value);
-      onChangeBlock(block, {
-        ...data,
-        value: value,
-      });
+    (newValue) => {
+      const plainValue = serializeNodesToText(newValue);
+
       if (plainValue !== text) {
         onChangeField('description', plainValue);
       }
+
+      if (JSON.stringify(newValue) !== JSON.stringify(value)) {
+        setValue(newValue);
+        onChangeBlock(block, { ...data, value: newValue });
+      }
     },
-    [block, data, text, onChangeField, onChangeBlock],
+    [value, text, block, data, onChangeField, onChangeBlock],
   );
 
   const handleFocus = useCallback(() => {
@@ -65,10 +78,6 @@ export const DescriptionBlockEdit = (props) => {
       onSelectBlock(block);
     }
   }, [onSelectBlock, selected, block]);
-
-  if (typeof window.__SERVER__ !== 'undefined' || __SERVER__) {
-    return <div />;
-  }
 
   const placeholder =
     data.placeholder || intl.formatMessage(messages['description']);
@@ -89,14 +98,14 @@ export const DescriptionBlockEdit = (props) => {
         placeholder={placeholder}
         slateSettings={slate}
       />
-      <SidebarPortal selected={props.selected}>
+      <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
           title={schema.title}
-          onChangeField={(id, value) => {
+          onChangeField={(id, newValue) => {
             props.onChangeBlock(props.block, {
               ...props.data,
-              [id]: value,
+              [id]: newValue,
             });
           }}
           formData={props.data}
@@ -107,11 +116,6 @@ export const DescriptionBlockEdit = (props) => {
   );
 };
 
-export default connect(
-  () => {
-    return {};
-  },
-  {
-    saveSlateBlockSelection,
-  },
-)(DescriptionBlockEdit);
+export default connect(() => ({}), { saveSlateBlockSelection })(
+  DescriptionBlockEdit,
+);
