@@ -103,11 +103,12 @@ export const DescriptionBlockEdit = (props) => {
           schema={schema}
           title={schema.title}
           onChangeField={(id, newValue) => {
-            props.onChangeBlock(props.block, {
-              ...props.data,
+            props.onChangeBlock(block, {
+              ...data,
               [id]: newValue,
             });
           }}
+          onChangeBlock={onChangeBlock}
           formData={props.data}
           block={block}
         />
