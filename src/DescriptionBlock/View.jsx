@@ -21,11 +21,11 @@ const View = (props) => {
 
   const text = metadata?.['description'] || '';
   const blockText = data?.value || config.settings.slate.defaultValue();
+
   const plainBlockText = useMemo(
     () => serializeNodesToText(blockText),
     [blockText],
   );
-
   const value = useMemo(() => {
     if (plainBlockText !== text) {
       return [

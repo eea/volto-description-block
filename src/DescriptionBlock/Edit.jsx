@@ -57,22 +57,21 @@ export const DescriptionBlockEdit = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
-  const handleChange = useCallback(
-    (newValue) => {
-      const plainValue = serializeNodesToText(newValue);
+  const handleChange = (newValue) => {
+    if (JSON.stringify(newValue) !== JSON.stringify(value)) {
+      setValue(newValue);
+    }
+    const plainValue = serializeNodesToText(newValue);
 
-      if (plainValue !== text) {
-        onChangeField('description', plainValue);
-      }
-
-      if (JSON.stringify(newValue) !== JSON.stringify(value)) {
-        setValue(newValue);
-        onChangeBlock(block, { ...data, value: newValue });
-      }
-    },
-    [value, text, block, data, onChangeField, onChangeBlock],
-  );
-
+    if (plainValue !== text) {
+      onChangeField('description', plainValue);
+    }
+  };
+  useEffect(() => {
+    if (data.value !== value) {
+      onChangeBlock(block, { ...data, value: value });
+    }
+  }, [block, data, onChangeBlock, value]);
   const handleFocus = useCallback(() => {
     if (!selected) {
       onSelectBlock(block);
