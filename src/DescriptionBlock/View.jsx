@@ -18,9 +18,9 @@ export const serializeText = (text) => {
 const View = (props) => {
   const { data } = props;
   const metadata = props.metadata || props.properties;
-
   const text = metadata?.['description'] || '';
   const blockText = data?.value || config.settings.slate.defaultValue();
+
   const plainBlockText = useMemo(
     () => serializeNodesToText(blockText),
     [blockText],

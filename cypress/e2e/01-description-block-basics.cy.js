@@ -51,7 +51,15 @@ describe('Blocks Tests', () => {
     // Add some text
     cy.get('.documentDescription div[role="textbox"]')
       .click()
-      .type('lorem ipsum dolor sit amet');
+      .type('lorem ipsum dolor sit amet. I will insert in the middle.');
+
+    cy.get('#toolbar-save').click();
+    cy.get('.edit').click();
+
+    cy.get('.documentDescription div[role="textbox"]')
+      .click()
+      .setSelection('insert')
+      .type('middle');
 
     // Select a part of the text and make it bold
     cy.get('.documentDescription [contenteditable=true]').setSelection('lorem');
@@ -76,12 +84,13 @@ describe('Blocks Tests', () => {
     });
 
     cy.contains('lorem ipsum dolor sit amet');
-    cy.get('#field-description').contains('lorem ipsum dolor sit amet');
-
     cy.get('#toolbar-save').click();
 
     // The page view should contain our changes
     cy.get('.documentDescription').contains('lorem ipsum dolor sit amet');
+    cy.get('.documentDescription').contains('I will middle in the middle');
+    cy.get('.documentDescription').find('strong').should('exist');
+    cy.get('.documentDescription').find('sub').should('exist');
     cy.visit('/cypress/my-page');
     cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page');
     cy.contains('lorem ipsum dolor sit amet');
