@@ -33,7 +33,7 @@ export const DescriptionBlockEdit = (props) => {
   } = props;
   const { slate } = config.settings;
   const intl = useIntl();
-  const initialValue = data?.value || config.settings.slate.defaultValue();
+  const initialValue = data?.value || slate.defaultValue();
   const [value, setValue] = useState(initialValue);
   const text = metadata?.['description'] || properties?.['description'] || '';
   const withBlockProperties = useCallback(
@@ -71,7 +71,9 @@ export const DescriptionBlockEdit = (props) => {
     if (data.value !== value) {
       onChangeBlock(block, { ...data, value: value });
     }
-  }, [block, data, onChangeBlock, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.value, value]);
+
   const handleFocus = useCallback(() => {
     if (!selected) {
       onSelectBlock(block);
@@ -101,6 +103,7 @@ export const DescriptionBlockEdit = (props) => {
         <BlockDataForm
           schema={schema}
           title={schema.title}
+          onChangeBlock={onChangeBlock}
           onChangeField={(id, newValue) => {
             props.onChangeBlock(props.block, {
               ...props.data,
