@@ -160,15 +160,13 @@ describe('Blocks Tests', () => {
     });
 
     cy.contains('lorem ipsum dolor sit amet');
-    cy.get('#field-description').find('strong').should('exist');
-    cy.get('#field-description').find('sub').should('exist');
     cy.get('#toolbar-save').click();
 
     // The page view should contain our changes
     cy.get('.documentDescription').contains('lorem ipsum dolor sit amet');
     cy.get('.documentDescription').contains('I will middle in the middle');
-    cy.get('#field-description').find('strong').should('exist');
-    cy.get('#field-description').find('sub').should('exist');
+    cy.get('.documentDescription').find('strong').should('exist');
+    cy.get('.documentDescription').find('sub').should('exist');
     cy.visit('/cypress/my-page');
     cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page');
     cy.contains('lorem ipsum dolor sit amet');
