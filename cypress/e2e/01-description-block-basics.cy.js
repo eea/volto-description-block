@@ -51,9 +51,16 @@ describe('Blocks Tests', () => {
     // Add some text
     cy.get('.documentDescription div[role="textbox"]')
       .click()
-      .type('lorem ipsum dolor sit amet. I will insert in the middle')
+      .type('lorem ipsum dolor sit amet. I will insert in the middle.');
+
+    cy.get('#toolbar-save').click();
+    cy.get('.edit').click();
+
+    cy.get('.documentDescription div[role="textbox"]')
+      .click()
       .setSelection('insert')
       .type('middle');
+
     // Select a part of the text and make it bold
     cy.get('.documentDescription [contenteditable=true]').setSelection('lorem');
     cy.get('.ui.buttons .button-wrapper a[title="Bold"]').click({
