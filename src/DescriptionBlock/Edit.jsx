@@ -37,7 +37,7 @@ export const DescriptionBlockEdit = (props) => {
         plaintext: text,
       });
     }
-  }, [plainValue, text, onChangeField, onChangeBlock, block]);
+  }, [data, plainValue, text, onChangeField, onChangeBlock, block]);
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
