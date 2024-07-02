@@ -4,8 +4,10 @@
 
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
+import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
@@ -21,16 +23,21 @@ export const DescriptionBlockEdit = (props) => {
     onChangeBlock,
     data,
   } = props;
-  const { slate } = config.settings;
-  const initialValue = data?.value || slate.defaultValue();
   const text = metadata?.['description'] || properties?.['description'] || '';
+  const plainValue = data?.value ? serializeNodesToText(data.value) : null;
 
-  const plainValue = serializeNodesToText(initialValue);
   useEffect(() => {
-    if (plainValue !== text) {
+    if (!isNil(plainValue) && plainValue !== text) {
       onChangeField('description', plainValue);
     }
-  }, [plainValue, text, onChangeField]);
+    if (isNil(plainValue) && !isNil(text)) {
+      onChangeBlock(block, {
+        ...data,
+        value: [createParagraph(text)],
+        plaintext: text,
+      });
+    }
+  }, [plainValue, text, onChangeField, onChangeBlock, block]);
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
