@@ -10,21 +10,35 @@ import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
-import schema from './schema';
 import TextBlockEdit from '@plone/volto-slate/blocks/Text/TextBlockEdit';
+import { handleKey } from '@plone/volto-slate/blocks/Text/keyboard';
+import schema from './schema';
 
 export const DescriptionBlockEdit = (props) => {
   const {
     selected,
-    onChangeField,
+    index,
     block,
     properties,
     metadata,
-    onChangeBlock,
     data,
+    onChangeField,
+    onChangeBlock,
+    onAddBlock,
+    onSelectBlock,
   } = props;
   const text = metadata?.['description'] || properties?.['description'] || '';
   const plainValue = data?.value ? serializeNodesToText(data.value) : null;
+
+  const onKeyDown = ({ editor, event }) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      if (data.disableNewBlocks) return;
+      onSelectBlock(onAddBlock(config.settings.defaultBlockType, index + 1));
+      return;
+    }
+    handleKey(editor, event);
+  };
 
   useEffect(() => {
     if (!isNil(plainValue) && plainValue !== text) {
@@ -41,7 +55,7 @@ export const DescriptionBlockEdit = (props) => {
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
-      <TextBlockEdit {...props} />
+      <TextBlockEdit {...props} onKeyDown={onKeyDown} multiBlocks={false} />
       <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
