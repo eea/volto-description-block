@@ -21,6 +21,10 @@
 
 [![Description Block](https://raw.githubusercontent.com/eea/volto-description-block/master/docs/description.gif)](https://youtu.be/JG_p85tOZi0)
 
+## Volto customizations
+- `volto-slate/blocks/Text/DefaultTextBlockEditor` -> Add 2 props to DefaultTextBlockEditor: multiBlocks - used to check if we should deconstructToVoltoBlocks; onKeyDown - used to override default key down events [ref](https://taskman.eionet.europa.eu/issues/272491)
+
+
 ## Getting started
 
 ### Try volto-description-block with Docker
