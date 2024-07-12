@@ -37,7 +37,7 @@ export const DescriptionBlockEdit = (props) => {
       onSelectBlock(onAddBlock(config.settings.defaultBlockType, index + 1));
       return;
     }
-    handleKey(editor, event);
+    handleKey({ editor, event });
   };
 
   useEffect(() => {
