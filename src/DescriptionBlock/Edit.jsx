@@ -16,15 +16,12 @@ import schema from './schema';
 export const DescriptionBlockEdit = (props) => {
   const {
     selected,
-    index,
     block,
     properties,
     metadata,
     data,
     onChangeField,
     onChangeBlock,
-    onAddBlock,
-    onSelectBlock,
   } = props;
   const text = metadata?.['description'] || properties?.['description'] || '';
   const plainValue = data?.value ? serializeNodesToText(data.value) : null;
