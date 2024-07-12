@@ -22,7 +22,7 @@ describe('Blocks Tests', () => {
     // Add text with enter key
     cy.get('.documentDescription div[role="textbox"]')
       .click()
-      .type('First line{enter}Second line{enter}Third line');
+      .type('First line{shift}{enter}Second line{shift}{enter}Third line');
 
     // Save
     cy.get('#toolbar-save').click();
