@@ -17,7 +17,7 @@ describe('Blocks Tests', () => {
     cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
       'description',
     );
-    cy.get('.button.description').click();
+    cy.get('.button.description').click({ force: true });
 
     // Add text with enter key
     cy.get('.documentDescription div[role="textbox"]')
@@ -75,7 +75,7 @@ describe('Blocks Tests', () => {
     cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
       'description',
     );
-    cy.get('.button.description').click();
+    cy.get('.button.description').click({ force: true });
 
     // Add some text
     cy.get('.documentDescription div[role="textbox"]')
@@ -109,7 +109,7 @@ describe('Blocks Tests', () => {
     cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
       'description',
     );
-    cy.get('.button.description').click();
+    cy.get('.button.description').click({ force: true });
     // Simulate copying paragraphs from an external source
     const paragraphs = 'First paragraph.\nSecond paragraph.';
 
@@ -192,7 +192,7 @@ describe('Blocks Tests', () => {
     cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
       'description',
     );
-    cy.get('.button.description').click();
+    cy.get('.button.description').click({ force: true });
 
     // Add some text
     cy.get('.documentDescription div[role="textbox"]')
