@@ -56,6 +56,7 @@ describe('Blocks Tests', () => {
     cy.get('.documentDescription div[role="textbox"]')
       .click()
       .type('First line{enter}Second line{enter}Third line{enter}');
+    cy.wait(5000);
 
     // Save
     cy.get('#toolbar-save').click();
