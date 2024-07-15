@@ -4,6 +4,41 @@ describe('Blocks Tests', () => {
   beforeEach(slateBeforeEach);
   afterEach(slateAfterEach);
 
+  it('Metadata set before creating description block', () => {
+    // Change page title
+    cy.createContent({
+      contentType: 'Document',
+      contentId: 'page-2',
+      contentTitle: 'Page 2',
+      path: 'cypress/my-page',
+      description: 'Metadata set',
+    });
+    cy.visit('cypress/my-page/page-2/edit');
+    cy.url().should(
+      'eq',
+      Cypress.config().baseUrl + '/cypress/my-page/page-2/edit',
+    );
+
+    cy.clearSlateTitle();
+    cy.getSlateTitle().type('Metadata set test');
+    cy.get('.documentFirstHeading').contains('Metadata set test');
+
+    cy.getSlate().click();
+
+    // Add description block
+    cy.get('.ui.basic.icon.button.block-add-button').first().click();
+    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
+      'description',
+    );
+    cy.get('.button.description').click({ force: true });
+
+    // Add text with enter key
+    // Save
+    cy.get('#toolbar-save').click();
+
+    // Verify lines
+    cy.get('.documentDescription').contains('Metadata set');
+  });
   it('Enter in Block', () => {
     // Change page title
     cy.clearSlateTitle();
