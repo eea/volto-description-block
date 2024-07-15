@@ -5,7 +5,6 @@ describe('Blocks Tests', () => {
   afterEach(slateAfterEach);
 
   it('Metadata set before creating description block', () => {
-    // Change page title
     cy.createContent({
       contentType: 'Document',
       contentId: 'page-2',
@@ -32,11 +31,10 @@ describe('Blocks Tests', () => {
     );
     cy.get('.button.description').click({ force: true });
 
-    // Add text with enter key
     // Save
     cy.get('#toolbar-save').click();
 
-    // Verify lines
+    // Verify line
     cy.get('.documentDescription').contains('Metadata set');
   });
   it('Enter in Block', () => {
