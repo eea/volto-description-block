@@ -9,19 +9,19 @@ import config from '@plone/volto/registry';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
+import { DetachedTextBlockEditor } from '@plone/volto-slate/blocks/Text/DetachedTextBlockEditor';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
-import TextBlockEdit from '@plone/volto-slate/blocks/Text/TextBlockEdit';
 
 export const DescriptionBlockEdit = (props) => {
   const {
     selected,
-    onChangeField,
     block,
     properties,
     metadata,
-    onChangeBlock,
     data,
+    onChangeField,
+    onChangeBlock,
   } = props;
   const text = metadata?.['description'] || properties?.['description'] || '';
   const plainValue = data?.value ? serializeNodesToText(data.value) : null;
@@ -41,7 +41,7 @@ export const DescriptionBlockEdit = (props) => {
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
-      <TextBlockEdit {...props} />
+      <DetachedTextBlockEditor {...props} />
       <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}

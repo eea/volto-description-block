@@ -29,6 +29,7 @@ Cypress.Commands.add(
     contentTitle,
     path = '',
     allow_discussion = false,
+    description="",
   }) => {
     let api_url, auth;
     api_url = Cypress.env('API_PATH') || 'http://localhost:8080/Plone';
@@ -103,6 +104,7 @@ Cypress.Commands.add(
               ],
             },
             allow_discussion: allow_discussion,
+            description: description,
           },
         })
         .then(() => console.log(`${contentType} created`));
