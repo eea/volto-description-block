@@ -2,7 +2,7 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
@@ -12,6 +12,16 @@ import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { DetachedTextBlockEditor } from '@plone/volto-slate/blocks/Text/DetachedTextBlockEditor';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
+
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
 
 export const DescriptionBlockEdit = (props) => {
   const {
@@ -23,13 +33,20 @@ export const DescriptionBlockEdit = (props) => {
     onChangeField,
     onChangeBlock,
   } = props;
-  const text = metadata?.['description'] || properties?.['description'] || '';
-  const plainValue = data?.value ? serializeNodesToText(data.value) : null;
+  const text = useMemo(
+    () => metadata?.['description'] || properties?.['description'] || '',
+    [metadata, properties],
+  );
+  const plainValue = useMemo(() => data?.plaintext || null, [data?.plaintext]);
+  const prevText = usePrevious(text);
 
   useEffect(() => {
-    if (!isNil(plainValue) && plainValue !== text) {
+    if (!isNil(plainValue) && plainValue !== text && prevText === text) {
       onChangeField('description', plainValue);
     }
+  }, [onChangeField, text, plainValue]);
+
+  useEffect(() => {
     if (isNil(plainValue) && !isNil(text)) {
       onChangeBlock(block, {
         ...data,
@@ -37,7 +54,7 @@ export const DescriptionBlockEdit = (props) => {
         plaintext: text,
       });
     }
-  }, [data, plainValue, text, onChangeField, onChangeBlock, block]);
+  }, [data, plainValue, onChangeBlock, block, text]);
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
