@@ -4,14 +4,13 @@
 
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
-import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
+import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
 
 function usePrevious(value) {
   const ref = useRef();
@@ -37,6 +36,7 @@ export const DescriptionBlockEdit = (props) => {
   const prevText = usePrevious(text);
 
   useEffect(() => {
+    //undo/redo behavior
     if (prevText !== text) {
       onChangeBlock(block, {
         ...data,

@@ -76,7 +76,7 @@ export const DetachedTextBlockEditor = (props) => {
             plaintext: serializeNodesToText(value || []),
             // TODO: also add html serialized value
           });
-
+          //custom cases: normalize text, undo/redo behaviour
           handleChange({ value });
         }}
         selected={selected}
