@@ -2,16 +2,26 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
-import { DetachedTextBlockEditor } from '@plone/volto-slate/blocks/Text/DetachedTextBlockEditor';
+import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
+
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
 
 export const DescriptionBlockEdit = (props) => {
   const {
@@ -24,27 +34,29 @@ export const DescriptionBlockEdit = (props) => {
     onChangeBlock,
   } = props;
   const text = metadata?.['description'] || properties?.['description'] || '';
-  const plainValue = data?.value ? serializeNodesToText(data.value) : null;
+  const prevText = usePrevious(text);
 
   useEffect(() => {
-    if (!isNil(plainValue) && plainValue !== text) {
-      onChangeField('description', plainValue);
-    }
-  }, [plainValue, onChangeField]);
-
-  useEffect(() => {
-    if (isNil(plainValue) && !isNil(text)) {
+    if (prevText !== text) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
         plaintext: text,
       });
     }
-  }, [data, plainValue, text, onChangeBlock, block]);
+  }, [text, prevText, block, data, onChangeBlock]);
 
   return (
     <div className={config.blocks.blocksConfig.description.className}>
-      <DetachedTextBlockEditor {...props} />
+      <DetachedTextBlockEditor
+        {...props}
+        handleChange={({ value }) => {
+          const plainValue = value ? serializeNodesToText(value) : null;
+          if (plainValue !== text) {
+            onChangeField('description', plainValue);
+          }
+        }}
+      />
       <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
