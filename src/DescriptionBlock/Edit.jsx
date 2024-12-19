@@ -2,7 +2,7 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
 import { isEmpty, isNil } from 'lodash';
@@ -64,17 +64,18 @@ export const DescriptionBlockEdit = (props) => {
     }
   }, [data, plainText, text, onChangeField, onChangeBlock, block]);
 
+  const handleChange = useCallback(
+    ({ value }) => {
+      const plainValue = value ? serializeNodesToText(value) : null;
+      if (plainValue !== text) {
+        onChangeField('description', plainValue);
+      }
+    },
+    [onChangeField, text],
+  );
   return (
     <div className={config.blocks.blocksConfig.description.className}>
-      <DetachedTextBlockEditor
-        {...props}
-        handleChange={({ value }) => {
-          const plainValue = value ? serializeNodesToText(value) : null;
-          if (plainValue !== text) {
-            onChangeField('description', plainValue);
-          }
-        }}
-      />
+      <DetachedTextBlockEditor {...props} handleChange={handleChange} />
       <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
