@@ -49,10 +49,10 @@ export const DescriptionBlockEdit = (props) => {
       onChangeBlock(block, {
         ...data,
         value: data.value || [createEmptyParagraph()],
-        plaintext: text,
+        plaintext: plainText,
       });
     }
-  }, [text, prevText, block, data, onChangeBlock]);
+  }, [text, prevText, block, data, onChangeBlock, plainText]);
 
   useEffect(() => {
     if (isNil(plainText) && !isEmpty(text)) {
