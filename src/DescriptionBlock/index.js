@@ -1,5 +1,5 @@
-import Edit from './Edit';
 import View from './View';
+import Edit from './Edit';
 
 const applyConfig = (config) => {
   config.blocks.blocksConfig.description = {

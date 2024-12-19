@@ -267,4 +267,62 @@ describe('Blocks Tests', () => {
     cy.get('.documentDescription').find('em').should('exist');
     cy.get('.documentDescription').find('sub').should('exist');
   });
+  it('Undo/Redo functionality', () => {
+    // Change page title
+    cy.clearSlateTitle();
+    cy.getSlateTitle().type('Volto Description Block Demo');
+    cy.get('.documentFirstHeading').contains('Volto Description Block Demo');
+
+    cy.getSlate().click();
+
+    // Add block
+    cy.get('.ui.basic.icon.button.block-add-button').first().click();
+    cy.get('.blocks-chooser .title').contains('Common').click();
+    cy.get('.content.active.common .button.listing')
+      .contains('Listing')
+      .click({ force: true });
+
+    // Save
+    cy.get('#toolbar-save').click();
+    cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page');
+
+    cy.contains('Volto Description Block Demo');
+    cy.get('.block.listing');
+
+    // Add a page to our site at the path cypress/my-page so it can be removed at the end of the test
+    cy.createContent({
+      contentType: 'Document',
+      contentId: 'page-1',
+      contentTitle: 'Page 1',
+      path: 'cypress/my-page',
+    });
+
+    // Visit the new page
+    cy.visit('cypress/my-page/page-1');
+    cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page/page-1');
+
+    cy.get('.edit').click();
+
+    // Add a description block
+    cy.getSlate().click();
+    cy.get('.ui.basic.icon.button.block-add-button').first().click();
+    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
+      'description',
+    );
+    cy.get('.button.description').click({ force: true });
+
+    // Add some text
+    cy.get('.documentDescription div[role="textbox"]')
+      .click()
+      .type('lorem ipsum dolor sit amet.');
+
+    //do Undo
+    for (let i = 0; i < 5; i++) {
+      cy.get('.toolbar-bottom .button.undo').click();
+    }
+    cy.contains('lorem ipsum dolor sit');
+
+    cy.get('#toolbar-save').click();
+    cy.contains('lorem ipsum dolor sit');
+  });
 });
