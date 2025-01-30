@@ -2,7 +2,7 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
@@ -14,6 +14,7 @@ import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
 
 export const DescriptionBlockEdit = (props) => {
+  const initialized = useRef(false);
   const {
     selected,
     block,
@@ -27,15 +28,17 @@ export const DescriptionBlockEdit = (props) => {
   const plainValue = data?.value ? serializeNodesToText(data.value) : null;
 
   useEffect(() => {
-    if (!isNil(plainValue) && plainValue !== text) {
-      onChangeField('description', plainValue);
-    }
-    if (isNil(plainValue) && !isNil(text)) {
+    if (!initialized.current && plainValue !== text) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
         plaintext: text,
       });
+    } else if (!isNil(plainValue) && plainValue !== text) {
+      onChangeField('description', plainValue);
+    }
+    if (!initialized.current) {
+      initialized.current = true;
     }
   }, [data, plainValue, text, onChangeField, onChangeBlock, block]);
 
