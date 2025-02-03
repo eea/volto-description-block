@@ -1,0 +1,9 @@
+6c6
+< import { handleKeyDetached } from './keyboard';
+---
+> import { handleKeyDetached } from '@plone/volto-slate/blocks/Text/keyboard';
+26a27
+>     handleChange,
+66a68,69
+>           //custom cases: normalize text, undo/redo behaviour
+>           handleChange({ value });
