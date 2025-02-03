@@ -2,19 +2,31 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { isNil } from 'lodash';
 import config from '@plone/volto/registry';
+import { isEmpty, isNil } from 'lodash';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
-import { createParagraph } from '@plone/volto-slate/utils';
+import {
+  createEmptyParagraph,
+  createParagraph,
+} from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
-import { DetachedTextBlockEditor } from '@plone/volto-slate/blocks/Text/DetachedTextBlockEditor';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
+import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
+
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
 
 export const DescriptionBlockEdit = (props) => {
-  const initialized = useRef(false);
   const {
     selected,
     block,
@@ -24,27 +36,46 @@ export const DescriptionBlockEdit = (props) => {
     onChangeField,
     onChangeBlock,
   } = props;
-  const text = metadata?.['description'] || properties?.['description'] || '';
-  const plainValue = data?.value ? serializeNodesToText(data.value) : null;
+  const text = useMemo(
+    () => metadata?.['description'] || properties?.['description'] || '',
+    [metadata, properties],
+  );
+  const plainText = useMemo(() => data?.plaintext || null, [data.plaintext]);
+  const prevText = usePrevious(text);
 
   useEffect(() => {
-    if (!initialized.current && plainValue !== text) {
+    //undo/redo behavior
+    if (prevText !== text) {
+      onChangeBlock(block, {
+        ...data,
+        value: data.value || [createEmptyParagraph()],
+        plaintext: plainText,
+      });
+    }
+  }, [text, prevText, block, data, onChangeBlock, plainText]);
+
+  useEffect(() => {
+    if (isNil(plainText) && !isEmpty(text)) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
         plaintext: text,
       });
-    } else if (!isNil(plainValue) && plainValue !== text) {
-      onChangeField('description', plainValue);
     }
-    if (!initialized.current) {
-      initialized.current = true;
-    }
-  }, [data, plainValue, text, onChangeField, onChangeBlock, block]);
+  }, [data, plainText, text, onChangeField, onChangeBlock, block]);
 
+  const handleChange = useCallback(
+    ({ value }) => {
+      const plainValue = value ? serializeNodesToText(value) : null;
+      if (plainValue !== text) {
+        onChangeField('description', plainValue);
+      }
+    },
+    [onChangeField, text],
+  );
   return (
     <div className={config.blocks.blocksConfig.description.className}>
-      <DetachedTextBlockEditor {...props} />
+      <DetachedTextBlockEditor {...props} handleChange={handleChange} />
       <SidebarPortal selected={selected}>
         <BlockDataForm
           schema={schema}
