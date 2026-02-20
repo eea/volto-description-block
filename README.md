@@ -3,16 +3,16 @@
 [![Releases](https://img.shields.io/github/v/release/eea/volto-description-block)](https://github.com/eea/volto-description-block/releases)
 
 [![Pipeline](https://ci.eionet.europa.eu/buildStatus/icon?job=volto-addons%2Fvolto-description-block%2Fmaster&subject=master)](https://ci.eionet.europa.eu/view/Github/job/volto-addons/job/volto-description-block/job/master/display/redirect)
-[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-master&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-master)
-[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-master&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-master)
-[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-master&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-master)
-[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-master&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-master)
+[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block)
+[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block)
+[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block)
+[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block)
 
 [![Pipeline](https://ci.eionet.europa.eu/buildStatus/icon?job=volto-addons%2Fvolto-description-block%2Fdevelop&subject=develop)](https://ci.eionet.europa.eu/view/Github/job/volto-addons/job/volto-description-block/job/develop/display/redirect)
-[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-develop&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-develop)
-[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-develop&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-develop)
-[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-develop&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-develop)
-[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block-develop&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block-develop)
+[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&branch=develop&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block&branch=develop)
+[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&branch=develop&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block&branch=develop)
+[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&branch=develop&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block&branch=develop)
+[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-description-block&branch=develop&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-description-block&branch=develop)
 
 
 [Volto](https://github.com/plone/volto) Description block based on [volto-slate](https://github.com/eea/volto-slate) that automatically strips HTML and updates Document description metadata field.
