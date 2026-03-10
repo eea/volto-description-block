@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: DescriptionBlock/Edit
-# defaultMessage: Add a description…
-msgid "Add a description…"
+#. Default: "Type text…"
+#: DescriptionBlock/DetachedTextBlockEditor
+msgid "Type text…"
 msgstr ""
