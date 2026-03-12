@@ -9,7 +9,7 @@ import { Label, TextArea } from 'semantic-ui-react';
 
 import { injectIntl } from 'react-intl';
 import config from '@plone/volto/registry';
-import { FormFieldWrapper } from '@plone/volto/components';
+import FormFieldWrapper from '@plone/volto/components/manage/Widgets/FormFieldWrapper';
 
 /**
  * Get default widget
