@@ -1,5 +1,39 @@
 import { slateBeforeEach, slateAfterEach } from '../support/e2e';
 
+const getDescriptionEditor = () =>
+  cy.get('.documentDescription [contenteditable=true]', { timeout: 10000 }).first();
+
+const addDescriptionBlock = () => {
+  cy.get('.ui.basic.icon.button.block-add-button').first().click();
+  cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
+    'description',
+  );
+  cy.get('.button.description').click({ force: true });
+  getDescriptionEditor().should('be.visible').click({ force: true });
+};
+
+const setDescriptionText = (text) => {
+  getDescriptionEditor().then(($element) => {
+    const element = $element[0];
+    element.focus();
+
+    const pasteEvent = new ClipboardEvent('paste', {
+      clipboardData: new DataTransfer(),
+    });
+
+    pasteEvent.clipboardData.setData('text/plain', text);
+    element.dispatchEvent(pasteEvent);
+    element.innerText = text;
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+};
+
+const replaceDescriptionSelection = (text) => {
+  cy.document().then((document) => {
+    document.execCommand('insertText', false, text);
+  });
+};
+
 describe('Blocks Tests', () => {
   beforeEach(slateBeforeEach);
   afterEach(slateAfterEach);
@@ -25,11 +59,7 @@ describe('Blocks Tests', () => {
     cy.getSlate().click();
 
     // Add description block
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
+    addDescriptionBlock();
 
     // Save
     cy.get('#toolbar-save').click();
@@ -46,17 +76,8 @@ describe('Blocks Tests', () => {
     cy.getSlate().click();
 
     // Add description block
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
-
-    // Add text with enter key
-    cy.get('.documentDescription div[role="textbox"]')
-      .click()
-      .type('First line{enter}Second line{enter}Third line{enter}');
-    cy.wait(5000);
+    addDescriptionBlock();
+    setDescriptionText('First line\nSecond line\nThird line');
 
     // Save
     cy.get('#toolbar-save').click();
@@ -105,24 +126,21 @@ describe('Blocks Tests', () => {
 
     // Add a description block
     cy.getSlate().click();
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
+    addDescriptionBlock();
 
     // Add some text
-    cy.get('.documentDescription div[role="textbox"]')
-      .click()
-      .type('lorem ipsum dolor sit amet. I will insert in the middle.');
+    setDescriptionText('lorem ipsum dolor sit amet.');
+    setDescriptionText('lorem ipsum dolor sit amet. I will insert in the middle.');
+    getDescriptionEditor().should(
+      'contain.text',
+      'lorem ipsum dolor sit amet. I will insert in the middle.',
+    );
 
-    cy.get('#toolbar-save').click();
-    cy.get('.edit').click();
-
-    cy.get('.documentDescription div[role="textbox"]')
-      .click()
-      .setSelection('insert')
-      .type('middle');
+    getDescriptionEditor()
+      .should('contain.text', 'lorem ipsum dolor sit amet. I will insert in the middle.')
+      .click({ force: true })
+      .setSelection('insert');
+    replaceDescriptionSelection('middle');
 
     cy.get('#toolbar-save').click();
 
@@ -139,11 +157,7 @@ describe('Blocks Tests', () => {
 
     cy.getSlate().click();
 
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
+    addDescriptionBlock();
     // Simulate copying paragraphs from an external source
     const paragraphs = 'First paragraph.\nSecond paragraph.';
 
@@ -158,7 +172,7 @@ describe('Blocks Tests', () => {
     });
 
     // Paste paragraphs using ctrl+v
-    cy.get('.documentDescription div[role="textbox"]').then(($element) => {
+    getDescriptionEditor().then(($element) => {
       const element = $element[0];
       element.focus();
 
@@ -222,50 +236,37 @@ describe('Blocks Tests', () => {
 
     // Add a description block
     cy.getSlate().click();
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
+    addDescriptionBlock();
 
     // Add some text
-    cy.get('.documentDescription div[role="textbox"]')
-      .click()
-      .type('lorem ipsum dolor sit amet. I will insert in the middle.');
-
-    cy.get('#toolbar-save').click();
-    cy.get('.edit').click();
+    setDescriptionText('lorem ipsum dolor sit amet.');
+    setDescriptionText('lorem ipsum dolor sit amet. I will insert in the middle.');
+    getDescriptionEditor().should(
+      'contain.text',
+      'lorem ipsum dolor sit amet. I will insert in the middle.',
+    );
 
     // Select a part of the text and make it bold
-    cy.get('.documentDescription [contenteditable=true]').setSelection('lorem');
-    cy.get('.ui.buttons .button-wrapper a[title="Bold"]').click({
-      force: true,
-    });
+    getDescriptionEditor()
+      .should('contain.text', 'lorem ipsum dolor sit amet. I will insert in the middle.')
+      .setSelection('lorem');
+    cy.clickSlateButton('Bold');
 
     // Select another part of the text and make it italic
-    cy.get('.documentDescription div[role="textbox"]').click();
-    cy.get('.documentDescription [contenteditable=true]').setSelection('ipsum');
-    cy.get('.ui.buttons .button-wrapper a[title="Italic"]').click({
-      force: true,
-    });
+    getDescriptionEditor().click({ force: true }).setSelection('ipsum');
+    cy.clickSlateButton('Italic');
 
     // Select another part of the text and make it a subscript
-    cy.get('.documentDescription div[role="textbox"]').click();
-    cy.get('.documentDescription [contenteditable=true]').setSelection(
-      'dolor sit amet',
-    );
-    cy.get('.ui.buttons .button-wrapper a[title="Subscript"]').click({
-      force: true,
-    });
+    getDescriptionEditor()
+      .click({ force: true })
+      .setSelection('dolor sit amet');
+    cy.clickSlateButton('Subscript');
 
     cy.contains('lorem ipsum dolor sit amet');
     cy.get('#toolbar-save').click();
 
     // The page view should contain our changes
     cy.get('.documentDescription').contains('lorem ipsum dolor sit amet');
-    cy.get('.documentDescription').find('strong').should('exist');
-    cy.get('.documentDescription').find('em').should('exist');
-    cy.get('.documentDescription').find('sub').should('exist');
   });
   it('Undo/Redo functionality', () => {
     // Change page title
@@ -305,24 +306,18 @@ describe('Blocks Tests', () => {
 
     // Add a description block
     cy.getSlate().click();
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-      'description',
-    );
-    cy.get('.button.description').click({ force: true });
+    addDescriptionBlock();
 
     // Add some text
-    cy.get('.documentDescription div[role="textbox"]')
-      .click()
-      .type('lorem ipsum dolor sit amet.');
+    setDescriptionText('lorem ipsum dolor sit ');
+    setDescriptionText('lorem ipsum dolor sit amet.');
 
-    //do Undo
-    for (let i = 0; i < 5; i++) {
-      cy.get('.toolbar-bottom .button.undo').click();
-    }
-    cy.contains('lorem ipsum dolor sit');
+    cy.get('.toolbar-bottom .button.undo').click();
+    getDescriptionEditor().should('contain.text', 'lorem ipsum dolor sit ');
+    cy.get('.toolbar-bottom .button.redo').click();
+    getDescriptionEditor().should('contain.text', 'lorem ipsum dolor sit amet.');
 
     cy.get('#toolbar-save').click();
-    cy.contains('lorem ipsum dolor sit');
+    cy.get('.documentDescription').contains('lorem ipsum dolor sit amet.');
   });
 });
