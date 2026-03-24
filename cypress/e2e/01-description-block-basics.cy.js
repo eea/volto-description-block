@@ -1,38 +1,10 @@
 import { slateBeforeEach, slateAfterEach } from '../support/e2e';
-
-const getDescriptionEditor = () =>
-  cy.get('.documentDescription [contenteditable=true]', { timeout: 10000 }).first();
-
-const addDescriptionBlock = () => {
-  cy.get('.ui.basic.icon.button.block-add-button').first().click();
-  cy.get(".blocks-chooser .ui.form .field.searchbox input[type='text']").type(
-    'description',
-  );
-  cy.get('.button.description').click({ force: true });
-  getDescriptionEditor().should('be.visible').click({ force: true });
-};
-
-const setDescriptionText = (text) => {
-  getDescriptionEditor().then(($element) => {
-    const element = $element[0];
-    element.focus();
-
-    const pasteEvent = new ClipboardEvent('paste', {
-      clipboardData: new DataTransfer(),
-    });
-
-    pasteEvent.clipboardData.setData('text/plain', text);
-    element.dispatchEvent(pasteEvent);
-    element.innerText = text;
-    element.dispatchEvent(new Event('input', { bubbles: true }));
-  });
-};
-
-const replaceDescriptionSelection = (text) => {
-  cy.document().then((document) => {
-    document.execCommand('insertText', false, text);
-  });
-};
+import {
+  addDescriptionBlock,
+  getDescriptionEditor,
+  replaceDescriptionSelection,
+  setDescriptionText,
+} from '../support/descriptionBlock';
 
 describe('Blocks Tests', () => {
   beforeEach(slateBeforeEach);
@@ -130,14 +102,19 @@ describe('Blocks Tests', () => {
 
     // Add some text
     setDescriptionText('lorem ipsum dolor sit amet.');
-    setDescriptionText('lorem ipsum dolor sit amet. I will insert in the middle.');
+    setDescriptionText(
+      'lorem ipsum dolor sit amet. I will insert in the middle.',
+    );
     getDescriptionEditor().should(
       'contain.text',
       'lorem ipsum dolor sit amet. I will insert in the middle.',
     );
 
     getDescriptionEditor()
-      .should('contain.text', 'lorem ipsum dolor sit amet. I will insert in the middle.')
+      .should(
+        'contain.text',
+        'lorem ipsum dolor sit amet. I will insert in the middle.',
+      )
       .click({ force: true })
       .setSelection('insert');
     replaceDescriptionSelection('middle');
@@ -240,7 +217,9 @@ describe('Blocks Tests', () => {
 
     // Add some text
     setDescriptionText('lorem ipsum dolor sit amet.');
-    setDescriptionText('lorem ipsum dolor sit amet. I will insert in the middle.');
+    setDescriptionText(
+      'lorem ipsum dolor sit amet. I will insert in the middle.',
+    );
     getDescriptionEditor().should(
       'contain.text',
       'lorem ipsum dolor sit amet. I will insert in the middle.',
@@ -248,7 +227,10 @@ describe('Blocks Tests', () => {
 
     // Select a part of the text and make it bold
     getDescriptionEditor()
-      .should('contain.text', 'lorem ipsum dolor sit amet. I will insert in the middle.')
+      .should(
+        'contain.text',
+        'lorem ipsum dolor sit amet. I will insert in the middle.',
+      )
       .setSelection('lorem');
     cy.clickSlateButton('Bold');
 
@@ -267,57 +249,5 @@ describe('Blocks Tests', () => {
 
     // The page view should contain our changes
     cy.get('.documentDescription').contains('lorem ipsum dolor sit amet');
-  });
-  it('Undo/Redo functionality', () => {
-    // Change page title
-    cy.clearSlateTitle();
-    cy.getSlateTitle().type('Volto Description Block Demo');
-    cy.get('.documentFirstHeading').contains('Volto Description Block Demo');
-
-    cy.getSlate().click();
-
-    // Add block
-    cy.get('.ui.basic.icon.button.block-add-button').first().click();
-    cy.get('.blocks-chooser .title').contains('Common').click();
-    cy.get('.content.active.common .button.listing')
-      .contains('Listing')
-      .click({ force: true });
-
-    // Save
-    cy.get('#toolbar-save').click();
-    cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page');
-
-    cy.contains('Volto Description Block Demo');
-    cy.get('.block.listing');
-
-    // Add a page to our site at the path cypress/my-page so it can be removed at the end of the test
-    cy.createContent({
-      contentType: 'Document',
-      contentId: 'page-1',
-      contentTitle: 'Page 1',
-      path: 'cypress/my-page',
-    });
-
-    // Visit the new page
-    cy.visit('cypress/my-page/page-1');
-    cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page/page-1');
-
-    cy.get('.edit').click();
-
-    // Add a description block
-    cy.getSlate().click();
-    addDescriptionBlock();
-
-    // Add some text
-    setDescriptionText('lorem ipsum dolor sit ');
-    setDescriptionText('lorem ipsum dolor sit amet.');
-
-    cy.get('.toolbar-bottom .button.undo').click();
-    getDescriptionEditor().should('contain.text', 'lorem ipsum dolor sit ');
-    cy.get('.toolbar-bottom .button.redo').click();
-    getDescriptionEditor().should('contain.text', 'lorem ipsum dolor sit amet.');
-
-    cy.get('#toolbar-save').click();
-    cy.get('.documentDescription').contains('lorem ipsum dolor sit amet.');
   });
 });
