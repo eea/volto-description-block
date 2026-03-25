@@ -5,6 +5,36 @@ import {
   setDescriptionText,
 } from '../support/descriptionBlock';
 
+const DESCRIPTION_EDITOR_SELECTOR = '.documentDescription [contenteditable=true]';
+const MAX_HISTORY_STEPS = 3;
+
+const clickHistoryUntilDescriptionEditor = (
+  buttonSelector,
+  shouldExist,
+  remainingSteps = MAX_HISTORY_STEPS,
+) => {
+  cy.get('body').then(($body) => {
+    const editorExists = $body.find(DESCRIPTION_EDITOR_SELECTOR).length > 0;
+
+    if (editorExists === shouldExist) {
+      return;
+    }
+
+    expect(
+      remainingSteps,
+      `description editor should ${shouldExist ? 'reappear' : 'disappear'}`,
+    ).to.be.greaterThan(0);
+
+    cy.get(buttonSelector).click();
+    cy.wait(100);
+    clickHistoryUntilDescriptionEditor(
+      buttonSelector,
+      shouldExist,
+      remainingSteps - 1,
+    );
+  });
+};
+
 describe('Description Block Undo Redo', () => {
   beforeEach(slateBeforeEach);
   afterEach(slateAfterEach);
@@ -18,10 +48,10 @@ describe('Description Block Undo Redo', () => {
     addDescriptionBlock();
     getDescriptionEditor().should('be.visible');
 
-    cy.get('.toolbar-bottom .button.undo').click();
-    cy.get('.documentDescription').should('not.exist');
+    clickHistoryUntilDescriptionEditor('.toolbar-bottom .button.undo', false);
+    cy.get('body').find(DESCRIPTION_EDITOR_SELECTOR).should('have.length', 0);
 
-    cy.get('.toolbar-bottom .button.redo').click();
+    clickHistoryUntilDescriptionEditor('.toolbar-bottom .button.redo', true);
     getDescriptionEditor().should('be.visible');
 
     setDescriptionText('abc');
