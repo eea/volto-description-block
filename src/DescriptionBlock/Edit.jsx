@@ -7,7 +7,10 @@ import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
 import { isEmpty } from 'lodash';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
-import { createEmptyParagraph, createParagraph } from '@plone/volto-slate/utils';
+import {
+  createEmptyParagraph,
+  createParagraph,
+} from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
