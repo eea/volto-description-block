@@ -6,6 +6,10 @@ import { DescriptionBlockEdit } from './Edit';
 
 jest.mock('@plone/volto-slate/utils', () => ({
   __esModule: true,
+  createEmptyParagraph: () => ({
+    type: 'p',
+    children: [{ text: '' }],
+  }),
   createParagraph: (text) => ({
     type: 'p',
     children: [{ text }],
@@ -136,5 +140,30 @@ describe('DescriptionBlockEdit', () => {
     );
 
     expect(props.onChangeBlock).not.toHaveBeenCalled();
+  });
+
+  it('resyncs the block when metadata description changes after mount', () => {
+    const props = makeProps({
+      metadata: { description: 'Existing description' },
+      data: {
+        plaintext: 'Existing description',
+        value: [createParagraph('Existing description')],
+      },
+    });
+
+    const { rerender } = render(<DescriptionBlockEdit {...props} />);
+    props.onChangeBlock.mockClear();
+
+    rerender(
+      <DescriptionBlockEdit
+        {...props}
+        metadata={{ description: 'Updated description' }}
+      />,
+    );
+
+    expect(props.onChangeBlock).toHaveBeenCalledWith('description-block', {
+      plaintext: 'Updated description',
+      value: [createParagraph('Updated description')],
+    });
   });
 });

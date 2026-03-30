@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
 import { isEmpty } from 'lodash';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
-import { createParagraph } from '@plone/volto-slate/utils';
+import { createEmptyParagraph, createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
@@ -15,6 +15,7 @@ import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
 
 export const DescriptionBlockEdit = (props) => {
   const initialized = useRef(false);
+  const previousText = useRef();
   const {
     selected,
     block,
@@ -37,6 +38,26 @@ export const DescriptionBlockEdit = (props) => {
       });
     }
     initialized.current = true;
+  }, [block, data, onChangeBlock, plainText, text]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      previousText.current = text;
+      return;
+    }
+
+    const prevText = previousText.current;
+    previousText.current = text;
+
+    if (prevText === undefined || prevText === text || plainText !== prevText) {
+      return;
+    }
+
+    onChangeBlock(block, {
+      ...data,
+      value: isEmpty(text) ? [createEmptyParagraph()] : [createParagraph(text)],
+      plaintext: text,
+    });
   }, [block, data, onChangeBlock, plainText, text]);
 
   const handleChange = useCallback(
