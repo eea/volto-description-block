@@ -25,11 +25,17 @@ export const DescriptionBlockEdit = (props) => {
     onChangeBlock,
   } = props;
   const text = metadata?.['description'] ?? properties?.['description'] ?? '';
+  const previousText = useRef(text);
   const plainText =
     data?.plaintext ?? (data?.value ? serializeNodesToText(data.value) : null);
 
   useEffect(() => {
-    if (!initialized.current && isEmpty(plainText) && !isEmpty(text)) {
+    const shouldSeed =
+      isEmpty(plainText) &&
+      !isEmpty(text) &&
+      (!initialized.current || previousText.current !== text);
+
+    if (shouldSeed) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
@@ -37,6 +43,7 @@ export const DescriptionBlockEdit = (props) => {
       });
     }
     initialized.current = true;
+    previousText.current = text;
   }, [block, data, onChangeBlock, plainText, text]);
 
   const handleChange = useCallback(

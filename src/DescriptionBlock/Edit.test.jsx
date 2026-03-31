@@ -93,6 +93,26 @@ describe('DescriptionBlockEdit', () => {
     expect(props.onChangeBlock).not.toHaveBeenCalled();
   });
 
+  it('initializes the block value when metadata arrives after mount', () => {
+    const props = makeProps();
+    const { rerender } = render(<DescriptionBlockEdit {...props} />);
+
+    expect(props.onChangeBlock).not.toHaveBeenCalled();
+
+    rerender(
+      <DescriptionBlockEdit
+        {...props}
+        metadata={{ description: 'Existing description' }}
+      />,
+    );
+
+    expect(props.onChangeBlock).toHaveBeenCalledTimes(1);
+    expect(props.onChangeBlock).toHaveBeenCalledWith('description-block', {
+      plaintext: 'Existing description',
+      value: [createParagraph('Existing description')],
+    });
+  });
+
   it('updates the metadata description when the editor value changes', () => {
     const value = [createParagraph('Existing description')];
     const props = makeProps({
