@@ -1,4 +1,8 @@
 import { slateLayoutBeforeEach, slateLayoutAfterEach } from '../support/e2e';
+import {
+  getDescriptionEditor,
+  setDescriptionText,
+} from '../support/descriptionBlock';
 
 describe('ControlPanel: Dexterity Content-Types Layout', () => {
   beforeEach(slateLayoutBeforeEach);
@@ -21,6 +25,7 @@ describe('ControlPanel: Dexterity Content-Types Layout', () => {
     // Wait a bit for draftjs to load, without this the title block
     // custom placeholder is missing and cypress gives a timeout error
     cy.wait(1000);
+    cy.contains('.tabs-wrapper .menu .item', 'Settings').click();
     cy.get('input[id="field-placeholder"]').type('Book title');
     cy.get('label[for="field-required"]').click();
     cy.get('label[for="field-fixed"]').click();
@@ -46,11 +51,13 @@ describe('ControlPanel: Dexterity Content-Types Layout', () => {
     cy.clearSlateTitle();
     cy.getSlateTitle().type('My First Book');
     cy.get('.documentFirstHeading').contains('My First Book');
-    cy.get('.description').contains('Description placeholder');
-    cy.get('.description.block div[role="textbox"]').click().type('My description');
+    cy.get('.documentDescription').contains('Description placeholder');
+    getDescriptionEditor().click({ force: true });
+    setDescriptionText('My description');
+    getDescriptionEditor().should('contain.text', 'My description');
 
     cy.get('#toolbar-save').click();
     cy.get('.documentFirstHeading').contains('My First Book');
-    cy.get('.description').contains('My description');
+    cy.get('.documentDescription').contains('My description');
   });
 });

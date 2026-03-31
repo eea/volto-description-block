@@ -3,7 +3,7 @@ import config from '@plone/volto/registry';
 import { Provider } from 'react-intl-redux';
 import configureStore from 'redux-mock-store';
 import TextareaWidget from './DescriptionWidget';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockStore = configureStore();
 const store = mockStore({
@@ -17,16 +17,29 @@ const mockOnChange = jest.fn();
 const mockOnEdit = jest.fn();
 const mockOnDelete = jest.fn();
 
+const MockTextWidget = ({ id, value = '', onChange }) => (
+  <textarea
+    aria-label={id}
+    value={value ?? ''}
+    onChange={({ target }) => onChange?.(id, target.value)}
+  />
+);
+
+const MockChoicesWidget = () => <div />;
+
+const makeWidgets = (overrides = {}) => ({
+  default: MockTextWidget,
+  choices: MockChoicesWidget,
+  vocabulary: {},
+  type: {},
+  widget: {},
+  factory: {},
+  ...overrides,
+});
+
 describe('TextareaWidget', () => {
   it('renders without crashing default', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: {},
-      factory: {},
-    };
+    config.widgets = makeWidgets();
     const { getByRole } = render(
       <Provider store={store}>
         <TextareaWidget
@@ -43,14 +56,7 @@ describe('TextareaWidget', () => {
   });
 
   it('renders an error message when maxLength is exceeded and formData has blocks with blocks', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: {},
-      factory: {},
-    };
+    config.widgets = makeWidgets();
 
     const { getByText, getByRole } = render(
       <Provider store={store}>
@@ -82,14 +88,7 @@ describe('TextareaWidget', () => {
   });
 
   it('renders an error message when maxLength is exceeded and formData has blocks with data', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: {},
-      factory: {},
-    };
+    config.widgets = makeWidgets();
 
     const { getByText, getByRole } = render(
       <Provider store={store}>
@@ -123,14 +122,7 @@ describe('TextareaWidget', () => {
   });
 
   it('renders an error message when maxLength is exceeded and formData is empty', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: {},
-      factory: {},
-    };
+    config.widgets = makeWidgets();
     const { getByText, getByRole } = render(
       <Provider store={store}>
         <TextareaWidget
@@ -153,14 +145,9 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetByName', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: { textarea: 'textarea' },
-      factory: {},
-    };
+    config.widgets = makeWidgets({
+      widget: { textarea: MockTextWidget },
+    });
     const { getByRole } = render(
       <Provider store={store}>
         <TextareaWidget
@@ -178,14 +165,9 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetByName and getWidgetDefault', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: { text: 'textarea' },
-      factory: {},
-    };
+    config.widgets = makeWidgets({
+      widget: { text: MockTextWidget },
+    });
     const { getByRole } = render(
       <Provider store={store}>
         <TextareaWidget
@@ -203,14 +185,9 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetFromTaggedValues', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: { textarea: 'textarea' },
-      factory: {},
-    };
+    config.widgets = makeWidgets({
+      widget: { textarea: MockTextWidget },
+    });
     const { getByRole } = render(
       <Provider store={store}>
         <TextareaWidget
@@ -228,14 +205,9 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetByChoices', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: {},
-      type: {},
-      widget: { textarea: 'textarea' },
-      factory: {},
-    };
+    config.widgets = makeWidgets({
+      widget: { textarea: MockTextWidget },
+    });
     render(
       <Provider store={store}>
         <TextareaWidget
@@ -251,14 +223,11 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetByVocabulary', () => {
-    config.widgets = {
-      default: 'textarea',
+    config.widgets = makeWidgets({
       choices: '',
-      vocabulary: { textarea: 'textarea' },
-      type: {},
-      widget: { textarea: 'textarea' },
-      factory: {},
-    };
+      vocabulary: { textarea: MockTextWidget },
+      widget: { textarea: MockTextWidget },
+    });
     render(
       <Provider store={store}>
         <TextareaWidget
@@ -276,14 +245,10 @@ describe('TextareaWidget', () => {
   });
 
   it('renders without crashing and calls getWidgetByVocabularyFromHint', () => {
-    config.widgets = {
-      default: 'textarea',
-      choices: 'div',
-      vocabulary: { textarea: 'textarea' },
-      type: {},
-      widget: { textarea: 'textarea' },
-      factory: {},
-    };
+    config.widgets = makeWidgets({
+      vocabulary: { textarea: MockTextWidget },
+      widget: { textarea: MockTextWidget },
+    });
     const { getByRole } = render(
       <Provider store={store}>
         <TextareaWidget

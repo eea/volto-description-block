@@ -2,31 +2,19 @@
  * @module volto-slate/blocks/Description/DescriptionBlockEdit
  */
 
-import React, { useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty } from 'lodash';
 import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
-import {
-  createEmptyParagraph,
-  createParagraph,
-} from '@plone/volto-slate/utils';
+import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
 import schema from './schema';
 import { DetachedTextBlockEditor } from './DetachedTextBlockEditor';
 
-function usePrevious(value) {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}
-
 export const DescriptionBlockEdit = (props) => {
+  const initialized = useRef(false);
   const {
     selected,
     block,
@@ -36,33 +24,33 @@ export const DescriptionBlockEdit = (props) => {
     onChangeField,
     onChangeBlock,
   } = props;
-  const text = useMemo(
-    () => metadata?.['description'] || properties?.['description'] || '',
-    [metadata, properties],
-  );
-  const plainText = useMemo(() => data?.plaintext || null, [data.plaintext]);
-  const prevText = usePrevious(text);
+  const text = metadata?.['description'] ?? properties?.['description'] ?? '';
+  // plainText is null when block has never been populated (no data.plaintext
+  // and no data.value). It is '' when user has cleared the text. This
+  // distinction prevents re-seeding after the user intentionally deletes text.
+  const plainText =
+    data?.plaintext ?? (data?.value ? serializeNodesToText(data.value) : null);
 
   useEffect(() => {
-    //undo/redo behavior
-    if (prevText !== text) {
-      onChangeBlock(block, {
-        ...data,
-        value: data.value || [createEmptyParagraph()],
-        plaintext: plainText,
-      });
-    }
-  }, [text, prevText, block, data, onChangeBlock, plainText]);
-
-  useEffect(() => {
-    if (isNil(plainText) && !isEmpty(text)) {
+    // Seed the block from metadata only when:
+    // 1. The block has never been populated (plainText is null/undefined,
+    //    NOT empty string — empty string means user intentionally cleared it)
+    // 2. There is text to seed from
+    // 3. We haven't already seeded (prevents re-seeding after undo reverts)
+    if (plainText == null && !isEmpty(text) && !initialized.current) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
         plaintext: text,
       });
+      initialized.current = true;
     }
-  }, [data, plainText, text, onChangeField, onChangeBlock, block]);
+    // Once the block has been populated (by seeding or user input), mark as
+    // initialized so undo won't trigger re-seeding
+    if (plainText != null) {
+      initialized.current = true;
+    }
+  }, [block, data, onChangeBlock, plainText, text]);
 
   const handleChange = useCallback(
     ({ value }) => {
