@@ -157,4 +157,48 @@ describe('DescriptionBlockEdit', () => {
 
     expect(props.onChangeBlock).not.toHaveBeenCalled();
   });
+
+  it('does not re-seed the block when user clears text and properties oscillate', () => {
+    // Simulate: block has text, user deletes all, then properties.description
+    // bounces back to the original value (Volto 18 form state oscillation).
+    const props = makeProps({
+      properties: { description: 'Hello' },
+      data: {
+        plaintext: 'Hello',
+        value: [createParagraph('Hello')],
+      },
+    });
+
+    const { rerender } = render(<DescriptionBlockEdit {...props} />);
+    props.onChangeBlock.mockClear();
+
+    // User deletes all text: plaintext becomes '' (empty string, not null)
+    rerender(
+      <DescriptionBlockEdit
+        {...props}
+        properties={{ description: '' }}
+        data={{
+          plaintext: '',
+          value: [{ type: 'p', children: [{ text: '' }] }],
+        }}
+      />,
+    );
+
+    expect(props.onChangeBlock).not.toHaveBeenCalled();
+
+    // properties.description oscillates back to the original value
+    rerender(
+      <DescriptionBlockEdit
+        {...props}
+        properties={{ description: 'Hello' }}
+        data={{
+          plaintext: '',
+          value: [{ type: 'p', children: [{ text: '' }] }],
+        }}
+      />,
+    );
+
+    // Must NOT re-seed — plaintext is '' (block was populated), not null
+    expect(props.onChangeBlock).not.toHaveBeenCalled();
+  });
 });

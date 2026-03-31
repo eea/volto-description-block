@@ -25,25 +25,31 @@ export const DescriptionBlockEdit = (props) => {
     onChangeBlock,
   } = props;
   const text = metadata?.['description'] ?? properties?.['description'] ?? '';
-  const previousText = useRef(text);
+  // plainText is null when block has never been populated (no data.plaintext
+  // and no data.value). It is '' when user has cleared the text. This
+  // distinction prevents re-seeding after the user intentionally deletes text.
   const plainText =
     data?.plaintext ?? (data?.value ? serializeNodesToText(data.value) : null);
 
   useEffect(() => {
-    const shouldSeed =
-      isEmpty(plainText) &&
-      !isEmpty(text) &&
-      (!initialized.current || previousText.current !== text);
-
-    if (shouldSeed) {
+    // Seed the block from metadata only when:
+    // 1. The block has never been populated (plainText is null/undefined,
+    //    NOT empty string — empty string means user intentionally cleared it)
+    // 2. There is text to seed from
+    // 3. We haven't already seeded (prevents re-seeding after undo reverts)
+    if (plainText == null && !isEmpty(text) && !initialized.current) {
       onChangeBlock(block, {
         ...data,
         value: [createParagraph(text)],
         plaintext: text,
       });
+      initialized.current = true;
     }
-    initialized.current = true;
-    previousText.current = text;
+    // Once the block has been populated (by seeding or user input), mark as
+    // initialized so undo won't trigger re-seeding
+    if (plainText != null) {
+      initialized.current = true;
+    }
   }, [block, data, onChangeBlock, plainText, text]);
 
   const handleChange = useCallback(
