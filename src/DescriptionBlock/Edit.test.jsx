@@ -25,10 +25,14 @@ jest.mock('@plone/volto/registry', () => ({
   },
 }));
 
-jest.mock('@plone/volto/components', () => ({
+jest.mock('@plone/volto/components/manage/Sidebar/SidebarPortal', () => ({
   __esModule: true,
-  SidebarPortal: ({ children }) => <div data-testid="sidebar">{children}</div>,
-  BlockDataForm: () => <div data-testid="block-data-form" />,
+  default: ({ children }) => <div data-testid="sidebar">{children}</div>,
+}));
+
+jest.mock('@plone/volto/components/manage/Form/BlockDataForm', () => ({
+  __esModule: true,
+  default: () => <div data-testid="block-data-form" />,
 }));
 
 jest.mock('./DetachedTextBlockEditor', () => ({

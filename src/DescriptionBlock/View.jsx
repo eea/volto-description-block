@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { isArray } from 'lodash';
+import isArray from 'lodash/isArray';
 import config from '@plone/volto/registry';
 import {
   serializeNodes,
