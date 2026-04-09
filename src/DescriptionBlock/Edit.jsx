@@ -5,8 +5,9 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
-import { isEmpty } from 'lodash';
-import { SidebarPortal, BlockDataForm } from '@plone/volto/components';
+import isEmpty from 'lodash/isEmpty';
+import SidebarPortal from '@plone/volto/components/manage/Sidebar/SidebarPortal';
+import BlockDataForm from '@plone/volto/components/manage/Form/BlockDataForm';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { saveSlateBlockSelection } from '@plone/volto-slate/actions';
 import { serializeNodesToText } from '@plone/volto-slate/editor/render';
