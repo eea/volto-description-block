@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import config from '@plone/volto/registry';
 import { Provider } from 'react-intl-redux';
@@ -13,9 +14,9 @@ const store = mockStore({
   },
 });
 
-const mockOnChange = jest.fn();
-const mockOnEdit = jest.fn();
-const mockOnDelete = jest.fn();
+const mockOnChange = vi.fn();
+const mockOnEdit = vi.fn();
+const mockOnDelete = vi.fn();
 
 const MockTextWidget = ({ id, value = '', onChange }) => (
   <textarea
