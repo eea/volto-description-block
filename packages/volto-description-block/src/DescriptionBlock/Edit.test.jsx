@@ -1,10 +1,11 @@
+import { vi } from 'vitest';
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { createParagraph } from '@plone/volto-slate/utils';
 import { DescriptionBlockEdit } from './Edit';
 
-jest.mock('@plone/volto-slate/utils', () => ({
+vi.mock('@plone/volto-slate/utils', () => ({
   __esModule: true,
   createParagraph: (text) => ({
     type: 'p',
@@ -12,7 +13,7 @@ jest.mock('@plone/volto-slate/utils', () => ({
   }),
 }));
 
-jest.mock('@plone/volto/registry', () => ({
+vi.mock('@plone/volto/registry', () => ({
   __esModule: true,
   default: {
     blocks: {
@@ -25,17 +26,17 @@ jest.mock('@plone/volto/registry', () => ({
   },
 }));
 
-jest.mock('@plone/volto/components/manage/Sidebar/SidebarPortal', () => ({
+vi.mock('@plone/volto/components/manage/Sidebar/SidebarPortal', () => ({
   __esModule: true,
   default: ({ children }) => <div data-testid="sidebar">{children}</div>,
 }));
 
-jest.mock('@plone/volto/components/manage/Form/BlockDataForm', () => ({
+vi.mock('@plone/volto/components/manage/Form/BlockDataForm', () => ({
   __esModule: true,
   default: () => <div data-testid="block-data-form" />,
 }));
 
-jest.mock('./DetachedTextBlockEditor', () => ({
+vi.mock('./DetachedTextBlockEditor', () => ({
   __esModule: true,
   DetachedTextBlockEditor: ({ handleChange }) => (
     <button
@@ -63,8 +64,8 @@ describe('DescriptionBlockEdit', () => {
     properties: {},
     metadata: {},
     data: {},
-    onChangeField: jest.fn(),
-    onChangeBlock: jest.fn(),
+    onChangeField: vi.fn(),
+    onChangeBlock: vi.fn(),
     ...overrides,
   });
 
